@@ -238,6 +238,7 @@ describe("test book api", () => {
       },
     }).then((response) => {
       expect(response.status).to.eq(204);
+      expect(response.body).to.eq("");
     });
   });
 
