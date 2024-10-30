@@ -95,8 +95,6 @@ describe("test book api", () => {
         },
       };
       expect(response.body).to.be.jsonSchema(schema);
-      console.clear();
-      console.log(response);
     });
   });
 
@@ -112,8 +110,23 @@ describe("test book api", () => {
         customerName: "ali",
       },
     }).then((response) => {
+      expect(response.status).to.eq(201);
       expect(response.body.created).to.eq(true);
       orderid = response.body.orderId;
+
+      const schema = {
+        type: "object",
+        properties: {
+          created: {
+            type: "boolean",
+          },
+          orderId: {
+            type: "string",
+          },
+        },
+        required: ["created", "orderId"],
+      };
+      expect(response.body).to.be.jsonSchema(schema);
     });
   });
 
@@ -124,7 +137,45 @@ describe("test book api", () => {
       headers: {
         Authorization: "Bearer " + booktoken,
       },
-    }).then((response) => {});
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+
+      const schema = {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+            },
+            bookId: {
+              type: "number",
+            },
+            customerName: {
+              type: "string",
+            },
+            createdBy: {
+              type: "string",
+            },
+            quantity: {
+              type: "number",
+            },
+            timestamp: {
+              type: "number",
+            },
+          },
+          required: [
+            "id",
+            "bookId",
+            "customerName",
+            "createdBy",
+            "quantity",
+            "timestamp",
+          ],
+        },
+      };
+      expect(response.body).to.be.jsonSchema(schema);
+    });
   });
 
   it("it should get a single order", () => {
@@ -134,7 +185,45 @@ describe("test book api", () => {
       headers: {
         Authorization: "Bearer " + booktoken,
       },
-    }).then((response) => {});
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.quantity).to.eq(1);
+      expect(response.body.customerName).to.eq("ali");
+      expect(response.body.bookId).to.eq(5);
+
+      const schema = {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+          },
+          bookId: {
+            type: "number",
+          },
+          customerName: {
+            type: "string",
+          },
+          createdBy: {
+            type: "string",
+          },
+          quantity: {
+            type: "number",
+          },
+          timestamp: {
+            type: "number",
+          },
+        },
+        required: [
+          "id",
+          "bookId",
+          "customerName",
+          "createdBy",
+          "quantity",
+          "timestamp",
+        ],
+      };
+      expect(response.body).to.be.jsonSchema(schema);
+    });
   });
 
   it("it should update a order", () => {
@@ -147,7 +236,9 @@ describe("test book api", () => {
       body: {
         customerName: "abuakar",
       },
-    }).then((response) => {});
+    }).then((response) => {
+      expect(response.status).to.eq(204);
+    });
   });
 
   it("it should delete a order", () => {
@@ -157,9 +248,9 @@ describe("test book api", () => {
       headers: {
         Authorization: "Bearer " + booktoken,
       },
-      body: {
-        customerName: "abuakar",
-      },
-    }).then((response) => {});
+    }).then((response) => {
+      expect(response.status).to.eq(204);
+      expect(response.body).to.eq("");
+    });
   });
 });
